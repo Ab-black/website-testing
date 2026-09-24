@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Book-style login and sign-up page-turn animation experiment.">
+<title>Book Page Turn — Animation Lab</title>
+<style>
+:root{
+  --bg:#0b0d10;
+  --surface:#13171c;
+  --raised:#1a1f26;
+  --text:#f5f7fa;
+  --muted:#9aa4b2;
+  --border:rgba(255,255,255,.1);
+  --accent:#fff;
+  --accent-contrast:#0b0d10;
+  --page:rgba(19,23,28,.98);
+  --page-top:rgba(255,255,255,.07);
+  --shadow:0 30px 80px rgba(0,0,0,.42);
+  --radius:24px;
+  --duration:850ms;
+}
+*{box-sizing:border-box}
+html{min-height:100%}
+body{
+  min-height:100vh;margin:0;display:grid;place-items:center;padding:32px 20px;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.055),transparent 40%),var(--bg);
+  color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input{font:inherit}
+.page{width:min(100%,460px)}
+.lab-label{
+  margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;
+  letter-spacing:.14em;text-align:center;text-transform:uppercase;
+}
+.book-wrap{width:100%;perspective:1450px}
+.book{
+  position:relative;width:100%;min-height:610px;transform-style:preserve-3d;
+}
+.sheet{
+  position:absolute;inset:0;min-height:610px;padding:clamp(30px,7vw,44px);
+  border:1px solid var(--border);border-radius:var(--radius);
+  background:linear-gradient(145deg,var(--page-top),transparent 38%),var(--page);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
+  overflow:hidden;
+}
+.sheet:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,.045),transparent 14%,transparent 86%,rgba(0,0,0,.12));
+}
+.sheet:after{
+  content:"";position:absolute;inset:-2px;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.4) 8%,transparent 28%,transparent 70%,rgba(0,0,0,.08) 100%);
+  transform:translateX(-28%);z-index:4;
+}
+.signup-page{z-index:1}
+.login-page{
+  z-index:2;transform-origin:left center;
+  transform:rotateY(0deg);backface-visibility:hidden;
+  transition:transform var(--duration) ease-in-out,box-shadow var(--duration) ease-in-out;
+}
+.book.is-open .login-page{
+  transform:rotateY(-176deg);
+  box-shadow:34px 24px 65px rgba(0,0,0,.46);
+}
+.book.is-turning .login-page:after{
+  opacity:1;
+  animation:pageShade var(--duration) ease-in-out both;
+}
+.book.is-open.is-turning .login-page:after{
+  animation-name:pageShadeReverse;
+}
+@keyframes pageShade{
+  0%{opacity:0;transform:translateX(-30%)}
+  18%{opacity:1;transform:translateX(-8%)}
+  55%{opacity:.78;transform:translateX(18%)}
+  100%{opacity:0;transform:translateX(48%)}
+}
+@keyframes pageShadeReverse{
+  0%{opacity:0;transform:translateX(48%)}
+  18%{opacity:1;transform:translateX(25%)}
+  55%{opacity:.78;transform:translateX(-2%)}
+  100%{opacity:0;transform:translateX(-30%)}
+}
+.content{position:relative;z-index:3}
+.brand-mark{
+  width:46px;height:46px;display:grid;place-items:center;margin-bottom:30px;
+  border:1px solid var(--border);border-radius:14px;background:var(--raised);
+  color:var(--text);font-size:.8rem;font-weight:800;letter-spacing:-.04em;
+}
+h1{margin:0 0 10px;font-size:clamp(2rem,7vw,2.55rem);line-height:1.05;letter-spacing:-.045em}
+.subtitle{margin:0 0 30px;color:var(--muted);font-size:.95rem;line-height:1.6}
+.form{display:grid;gap:16px}
+.field{display:grid;gap:8px}
+.field label{color:var(--text);font-size:.78rem;font-weight:650}
+.input-wrap{position:relative}
+.input-icon{
+  position:absolute;top:50%;left:15px;width:18px;height:18px;display:grid;place-items:center;
+  color:var(--muted);font-size:.88rem;pointer-events:none;transform:translateY(-50%);
+}
+.field input{
+  width:100%;height:50px;padding:0 15px 0 44px;border:1px solid var(--border);
+  border-radius:14px;outline:none;background:rgba(255,255,255,.035);color:var(--text);
+  transition:border-color 180ms ease,background 180ms ease,box-shadow 180ms ease;
+}
+.field input::placeholder{color:#6f7987}
+.field input:focus{
+  border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.055);
+  box-shadow:0 0 0 4px rgba(255,255,255,.055);
+}
+.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
+.remember{
+  display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;cursor:pointer;
+}
+.remember input{width:15px;height:15px;accent-color:var(--accent)}
+a{color:var(--text);font-size:.78rem;font-weight:650;text-decoration:none}
+a:hover{text-decoration:underline}
+.primary{
+  width:100%;min-height:50px;margin-top:8px;border:0;border-radius:14px;
+  background:var(--accent);color:var(--accent-contrast);cursor:pointer;font-weight:750;
+  transition:transform 180ms ease,box-shadow 180ms ease;
+}
+.primary:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,0,0,.2)}
+.primary:active{transform:translateY(0)}
+.switch-copy{
+  margin:42px 0 0;color:var(--muted);font-size:.82rem;line-height:1.5;text-align:center;
+}
+.switch{margin-left:4px;padding:0;border:0;background:none;color:var(--text);cursor:pointer;font:inherit;font-weight:750}
+.switch:hover{text-decoration:underline}
+.sr-status{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+@media(max-width:480px){
+  body{padding:20px 14px}
+  .book,.sheet{min-height:570px}
+  .sheet{padding:28px 22px}
+}
+@media(prefers-reduced-motion:reduce){
+  .login-page{transition-duration:1ms}
+  .book.is-turning .login-page:after{animation:none!important}
+  .field input,.primary{transition:none}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="lab-label">Animation Lab · Book Page Turn</p>
+
+  <div class="book-wrap">
+    <section class="book" id="book" aria-live="polite">
+      <div class="sheet signup-page">
+        <div class="content">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Sign up</h1>
+          <p class="subtitle">Create your account and get started.</p>
+
+          <form class="form" id="signupForm">
+            <div class="field">
+              <label for="signupName">Full name</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">●</span>
+                <input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name">
+              </div>
+            </div>
+            <div class="field">
+              <label for="signupEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">✉</span>
+                <input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+              </div>
+            </div>
+            <div class="field">
+              <label for="signupPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">●</span>
+                <input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+              </div>
+            </div>
+            <button class="primary" type="submit">Sign Up</button>
+          </form>
+
+          <p class="switch-copy">Already have an account?<button class="switch" id="showLogin" type="button">Log in</button></p>
+        </div>
+      </div>
+
+      <div class="sheet login-page" id="loginPage">
+        <div class="content">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Login</h1>
+          <p class="subtitle">Sign in to continue to your account.</p>
+
+          <form class="form" id="loginForm">
+            <div class="field">
+              <label for="loginEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">✉</span>
+                <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+              </div>
+            </div>
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">●</span>
+                <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="remember"><input id="rememberMe" type="checkbox">Remember me</label>
+              <a href="#forgot-password">Forgot password?</a>
+            </div>
+            <button class="primary" type="submit">Sign In</button>
+          </form>
+
+          <p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <p class="sr-status" id="status" aria-live="polite">Login form is active.</p>
+</main>
+
+<script>
+(()=>{
+  const book=document.getElementById("book");
+  const showSignup=document.getElementById("showSignup");
+  const showLogin=document.getElementById("showLogin");
+  const status=document.getElementById("status");
+  const loginPage=document.getElementById("loginPage");
+  const loginForm=document.getElementById("loginForm");
+  const signupForm=document.getElementById("signupForm");
+  const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)");
+  let isOpen=false;
+  let isTurning=false;
+
+  function turnPage(nextOpen){
+    if(isTurning || nextOpen===isOpen) return;
+    isTurning=true;
+    book.classList.remove("is-turning");
+    void book.offsetWidth;
+    book.classList.toggle("is-open",nextOpen);
+    book.classList.add("is-turning");
+    status.textContent=nextOpen?"Sign-up form is active.":"Login form is active.";
+    isOpen=nextOpen;
+  }
+
+  loginPage.addEventListener("transitionend",event=>{
+    if(event.propertyName==="transform"){
+      isTurning=false;
+      book.classList.remove("is-turning");
+    }
+  });
+
+  showSignup.addEventListener("click",()=>turnPage(true));
+  showLogin.addEventListener("click",()=>turnPage(false));
+
+  loginForm.addEventListener("submit",e=>e.preventDefault());
+  signupForm.addEventListener("submit",e=>e.preventDefault());
+
+  if(reducedMotion.matches){
+    book.classList.add("is-open");
+    isOpen=true;
+    status.textContent="Sign-up form is active.";
+    isTurning=false;
+  }
+})();
+</script>
+</body>
+</html>
