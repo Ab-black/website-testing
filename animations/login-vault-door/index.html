@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Vault-door login and sign-up animation experiment.">
+<title>Vault Door — Animation Lab</title>
+<style>
+:root{--bg:#0b0d10;--surface:#13171c;--raised:#1a1f26;--text:#f5f7fa;--muted:#9aa4b2;--border:rgba(255,255,255,.1);--accent:#fff;--accent-contrast:#0b0d10;--shadow:0 28px 80px rgba(0,0,0,.42);--radius:24px;--duration:800ms}
+*{box-sizing:border-box}html{min-height:100%}body{min-height:100vh;margin:0;display:grid;place-items:center;padding:32px 20px;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 38%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}.page{width:min(100%,440px)}.lab-label{margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-align:center;text-transform:uppercase}.vault-container{width:100%;perspective:1400px}.vault{position:relative;width:100%;min-height:600px;transform-style:preserve-3d}.panel{position:absolute;inset:0;display:flex;flex-direction:column;padding:clamp(28px,7vw,42px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}.panel:before{content:"";position:absolute;top:-120px;right:-120px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.045);pointer-events:none}.signup-panel{z-index:1;background:linear-gradient(145deg,rgba(255,255,255,.045),transparent 38%),var(--surface);box-shadow:var(--shadow)}.door-panel{z-index:2;transform-origin:left center;transform:rotateY(0deg);background:linear-gradient(145deg,rgba(255,255,255,.08),transparent 35%),linear-gradient(180deg,var(--raised),var(--surface));box-shadow:var(--shadow);transition:transform var(--duration) ease-in-out,opacity var(--duration) ease-in-out,box-shadow var(--duration) ease-in-out}.vault.is-open .door-panel{transform:rotateY(-120deg);opacity:.18;box-shadow:34px 34px 65px rgba(0,0,0,.5)}.handle{position:absolute;right:24px;top:50%;z-index:3;width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:50%;background:var(--raised);box-shadow:inset 0 0 0 7px rgba(255,255,255,.025),0 8px 20px rgba(0,0,0,.25);transform:translateY(-50%);pointer-events:none}.handle:after{content:"";position:absolute;left:50%;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translate(-50%,-50%)}.brand-mark{width:46px;height:46px;display:grid;place-items:center;margin-bottom:30px;border:1px solid var(--border);border-radius:14px;background:var(--raised);color:var(--text);font-size:.8rem;font-weight:800;letter-spacing:-.04em}h1{position:relative;margin:0 0 10px;font-size:clamp(1.9rem,7vw,2.45rem);line-height:1.05;letter-spacing:-.045em}.subtitle{position:relative;margin:0 0 30px;color:var(--muted);font-size:.95rem;line-height:1.6}.form{position:relative;display:grid;gap:16px}.field{display:grid;gap:8px}.field label{color:var(--text);font-size:.78rem;font-weight:650}.input-wrap{position:relative}.input-icon{position:absolute;top:50%;left:15px;width:18px;height:18px;display:grid;place-items:center;color:var(--muted);font-size:.9rem;pointer-events:none;transform:translateY(-50%)}.field input{width:100%;height:50px;padding:0 15px 0 44px;border:1px solid var(--border);border-radius:14px;outline:none;background:rgba(255,255,255,.035);color:var(--text);transition:border-color 180ms ease,background 180ms ease,box-shadow 180ms ease}.field input::placeholder{color:#6f7987}.field input:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.055);box-shadow:0 0 0 4px rgba(255,255,255,.055)}.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}.remember{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;cursor:pointer}.remember input{width:15px;height:15px;accent-color:var(--accent)}a{color:var(--text);font-size:.78rem;font-weight:650;text-decoration:none}a:hover{text-decoration:underline}.primary{width:100%;min-height:50px;margin-top:8px;border:0;border-radius:14px;background:var(--accent);color:var(--accent-contrast);cursor:pointer;font-weight:750;transition:transform 180ms ease,opacity 180ms ease}.primary:hover{transform:translateY(-1px)}.primary:active{transform:translateY(0)}.switch-copy{margin:auto 0 0;padding-top:28px;color:var(--muted);font-size:.82rem;line-height:1.5;text-align:center}.switch{margin-left:4px;padding:0;border:0;background:none;color:var(--text);cursor:pointer;font:inherit;font-weight:750}.switch:hover{text-decoration:underline}.sr-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:480px){body{padding:20px 14px}.vault{min-height:570px}.panel{padding:28px 22px}.handle{right:15px;width:42px;height:42px}}@media(prefers-reduced-motion:reduce){.door-panel{transition-duration:1ms}.field input,.primary{transition:none}}
+</style>
+</head>
+<body>
+<main class="page">
+<p class="lab-label">Animation Lab · Vault Door</p>
+<div class="vault-container">
+<section class="vault" id="vault" aria-live="polite">
+<div class="panel signup-panel">
+<div class="brand-mark" aria-hidden="true">VT</div>
+<h1>Sign up</h1>
+<p class="subtitle">Create your account and get started.</p>
+<form class="form" id="signupForm">
+<div class="field"><label for="signupName">Full name</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name"></div></div>
+<div class="field"><label for="signupEmail">Email address</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">✉</span><input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div></div>
+<div class="field"><label for="signupPassword">Password</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password"></div></div>
+<button class="primary" type="submit">Sign Up</button>
+</form>
+<p class="switch-copy">Already have an account?<button class="switch" id="showLogin" type="button">Log in</button></p>
+</div>
+<div class="panel door-panel">
+<span class="handle" aria-hidden="true"></span>
+<div class="brand-mark" aria-hidden="true">VT</div>
+<h1>Login</h1>
+<p class="subtitle">Sign in to continue to your account.</p>
+<form class="form" id="loginForm">
+<div class="field"><label for="loginEmail">Email address</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">✉</span><input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div></div>
+<div class="field"><label for="loginPassword">Password</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password"></div></div>
+<div class="form-row"><label class="remember"><input id="rememberMe" type="checkbox">Remember me</label><a href="#forgot-password">Forgot password?</a></div>
+<button class="primary" type="submit">Sign In</button>
+</form>
+<p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
+</div>
+</section>
+</div>
+<p class="sr-status" id="doorStatus" aria-live="polite">Login form is active.</p>
+</main>
+<script>
+(()=>{const vault=document.getElementById("vault"),showSignup=document.getElementById("showSignup"),showLogin=document.getElementById("showLogin"),status=document.getElementById("doorStatus"),loginForm=document.getElementById("loginForm"),signupForm=document.getElementById("signupForm");let visibleFace=0;function setFace(nextFace){if(nextFace===visibleFace)return;visibleFace=nextFace;vault.classList.toggle("is-open",visibleFace===1);status.textContent=visibleFace===1?"Sign-up form is active.":"Login form is active."}showSignup.addEventListener("click",()=>setFace(1));showLogin.addEventListener("click",()=>setFace(0));loginForm.addEventListener("submit",e=>e.preventDefault());signupForm.addEventListener("submit",e=>e.preventDefault())})();
+</script>
+</body>
+</html>
