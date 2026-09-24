@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Orbital halo ring login animation experiment.">
+<meta name="description" content="Orbital halo login animation experiment.">
 <title>Orbital Halo — Animation Lab</title>
 <style>
 :root{
@@ -17,15 +17,13 @@
   --accent-contrast:#0b0d10;
   --shadow:0 30px 80px rgba(0,0,0,.42);
   --radius:24px;
-  --parallax-x:0px;
-  --parallax-y:0px;
 }
 *{box-sizing:border-box}
 html{min-height:100%}
 body{
   min-height:100vh;margin:0;display:grid;place-items:center;padding:32px 20px;
   background:
-    radial-gradient(circle at 50% 50%,rgba(255,255,255,.035),transparent 45%),
+    radial-gradient(circle at 50% 48%,rgba(255,255,255,.045),transparent 42%),
     var(--bg);
   color:var(--text);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -41,31 +39,47 @@ button,input{font:inherit}
   position:relative;width:100%;perspective:1200px;perspective-origin:50% 50%;
 }
 .halos{
-  position:absolute;inset:-180px;pointer-events:none;overflow:visible;
+  position:absolute;inset:-190px;pointer-events:none;overflow:visible;
   transform-style:preserve-3d;
 }
 .ring{
   position:absolute;left:50%;top:50%;border-radius:50%;
-  border:1px solid rgba(255,255,255,.18);
-  background:radial-gradient(circle,transparent 61%,rgba(255,255,255,.025) 68%,transparent 76%);
-  box-shadow:0 0 28px rgba(255,255,255,.035),inset 0 0 24px rgba(255,255,255,.025);
   will-change:transform;
+  transform-style:preserve-3d;
 }
-.ring:after{
-  content:"";position:absolute;inset:-1px;border-radius:inherit;
-  border:1px solid rgba(255,255,255,.055);filter:blur(4px);
+.ring::before,
+.ring::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+}
+.ring::before{
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 0 22px rgba(255,255,255,.035),inset 0 0 22px rgba(255,255,255,.018);
+}
+.ring::after{
+  inset:5px;
+  border:1px solid rgba(255,255,255,.045);
+  filter:blur(3px);
 }
 .ring-outer{
-  width:680px;height:680px;margin:-340px;
+  width:700px;height:700px;margin:-350px;
   animation:orbitOuter 30s linear infinite;
+  background:conic-gradient(from 25deg,transparent 0 32%,rgba(255,255,255,.09) 36%,transparent 42% 72%,rgba(255,255,255,.055) 76%,transparent 82%);
+  -webkit-mask:radial-gradient(circle,transparent 69.5%,#000 70%,#000 70.6%,transparent 71.2%);
+  mask:radial-gradient(circle,transparent 69.5%,#000 70%,#000 70.6%,transparent 71.2%);
 }
 .ring-middle{
-  width:500px;height:500px;margin:-250px;
-  animation:orbitMiddle 45s linear infinite reverse;
+  width:510px;height:510px;margin:-255px;
+  animation:orbitMiddle 48s linear infinite;
+  background:conic-gradient(from 190deg,transparent 0 22%,rgba(255,255,255,.07) 27%,transparent 34% 66%,rgba(255,255,255,.055) 71%,transparent 78%);
+  -webkit-mask:radial-gradient(circle,transparent 69.2%,#000 69.8%,#000 70.5%,transparent 71.1%);
+  mask:radial-gradient(circle,transparent 69.2%,#000 69.8%,#000 70.5%,transparent 71.1%);
 }
 .ring-inner{
   width:350px;height:350px;margin:-175px;
-  animation:orbitInner 55s linear infinite;
+  animation:orbitInner 58s linear infinite reverse;
+  background:conic-gradient(from 80deg,transparent 0 28%,rgba(255,255,255,.085) 34%,transparent 41% 70%,rgba(255,255,255,.05) 76%,transparent 83%);
+  -webkit-mask:radial-gradient(circle,transparent 68.8%,#000 69.5%,#000 70.5%,transparent 71.2%);
+  mask:radial-gradient(circle,transparent 68.8%,#000 69.5%,#000 70.5%,transparent 71.2%);
 }
 .card{
   position:relative;width:100%;min-height:610px;padding:clamp(30px,7vw,44px);
@@ -74,8 +88,7 @@ button,input{font:inherit}
     linear-gradient(145deg,rgba(255,255,255,.07),transparent 40%),
     var(--surface);
   box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
-  z-index:2;
-  overflow:hidden;
+  z-index:2;overflow:hidden;
 }
 .card:before{
   content:"";position:absolute;inset:0;pointer-events:none;
@@ -87,9 +100,7 @@ button,input{font:inherit}
   border:1px solid var(--border);border-radius:14px;background:var(--raised);
   color:var(--text);font-size:.8rem;font-weight:800;letter-spacing:-.04em;
 }
-h1{
-  margin:0 0 10px;font-size:clamp(2rem,7vw,2.55rem);line-height:1.05;letter-spacing:-.045em;
-}
+h1{margin:0 0 10px;font-size:clamp(2rem,7vw,2.55rem);line-height:1.05;letter-spacing:-.045em}
 .subtitle{margin:0 0 30px;color:var(--muted);font-size:.95rem;line-height:1.6}
 .form{display:grid;gap:16px}
 .field{display:grid;gap:8px}
@@ -110,9 +121,7 @@ h1{
   box-shadow:0 0 0 4px rgba(255,255,255,.055);
 }
 .form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
-.remember{
-  display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;cursor:pointer;
-}
+.remember{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;cursor:pointer}
 .remember input{width:15px;height:15px;accent-color:var(--accent)}
 a{color:var(--text);font-size:.78rem;font-weight:650;text-decoration:none}
 a:hover{text-decoration:underline}
@@ -124,24 +133,30 @@ a:hover{text-decoration:underline}
 .primary:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,0,0,.2)}
 .primary:active{transform:translateY(0)}
 .switch-copy{margin:42px 0 0;color:var(--muted);font-size:.82rem;line-height:1.5;text-align:center}
-.switch{
-  margin-left:4px;padding:0;border:0;background:none;color:var(--text);
-  cursor:pointer;font:inherit;font-weight:750;
-}
+.switch{margin-left:4px;padding:0;border:0;background:none;color:var(--text);cursor:pointer;font:inherit;font-weight:750}
 .switch:hover{text-decoration:underline}
 .sr-status{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
-@keyframes orbitOuter{to{transform:translate(var(--parallax-x),var(--parallax-y)) rotate(360deg)}}
-@keyframes orbitMiddle{to{transform:translate(var(--parallax-x),var(--parallax-y)) rotate(-360deg)}}
-@keyframes orbitInner{to{transform:translate(var(--parallax-x),var(--parallax-y)) rotate(360deg)}}
+@keyframes orbitOuter{
+  from{transform:translate3d(0,0,0) rotate(0deg)}
+  to{transform:translate3d(var(--outer-x,0px),var(--outer-y,0px),0) rotate(360deg)}
+}
+@keyframes orbitMiddle{
+  from{transform:translate3d(0,0,0) rotate(0deg)}
+  to{transform:translate3d(var(--middle-x,0px),var(--middle-y,0px),0) rotate(-360deg)}
+}
+@keyframes orbitInner{
+  from{transform:translate3d(0,0,0) rotate(0deg)}
+  to{transform:translate3d(var(--inner-x,0px),var(--inner-y,0px),0) rotate(360deg)}
+}
 @media(max-width:560px){
   body{padding:20px 14px}
-  .halos{inset:-130px}
-  .ring-outer{width:520px;height:520px;margin:-260px}
-  .ring-middle{width:390px;height:390px;margin:-195px}
-  .ring-inner{width:275px;height:275px;margin:-137.5px}
+  .halos{inset:-135px}
+  .ring-outer{width:530px;height:530px;margin:-265px}
+  .ring-middle{width:400px;height:400px;margin:-200px}
+  .ring-inner{width:280px;height:280px;margin:-140px}
   .card{min-height:570px;padding:28px 22px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -159,11 +174,13 @@ a:hover{text-decoration:underline}
       <div class="ring ring-middle"></div>
       <div class="ring ring-inner"></div>
     </div>
+
     <section class="card" aria-live="polite">
       <div class="content">
         <div class="brand-mark" aria-hidden="true">VT</div>
         <h1>Login</h1>
         <p class="subtitle">Sign in to continue to your account.</p>
+
         <form class="form" id="loginForm">
           <div class="field">
             <label for="loginEmail">Email address</label>
@@ -172,6 +189,7 @@ a:hover{text-decoration:underline}
               <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
             </div>
           </div>
+
           <div class="field">
             <label for="loginPassword">Password</label>
             <div class="input-wrap">
@@ -179,49 +197,63 @@ a:hover{text-decoration:underline}
               <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
             </div>
           </div>
+
           <div class="form-row">
             <label class="remember"><input id="rememberMe" type="checkbox">Remember me</label>
             <a href="#forgot-password">Forgot password?</a>
           </div>
+
           <button class="primary" type="submit">Sign In</button>
         </form>
+
         <p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
       </div>
     </section>
   </div>
+
   <p class="sr-status" id="status" aria-live="polite">Login form is active.</p>
 </main>
+
 <script>
 (()=>{
   const form=document.getElementById("loginForm");
   const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)");
-  const rings=[...document.querySelectorAll(".ring")];
+  const rings=[
+    {el:document.querySelector(".ring-outer"),x:"--outer-x",y:"--outer-y",sensitivity:1},
+    {el:document.querySelector(".ring-middle"),x:"--middle-x",y:"--middle-y",sensitivity:.72},
+    {el:document.querySelector(".ring-inner"),x:"--inner-x",y:"--inner-y",sensitivity:.48}
+  ];
   let frame=null;
-  function updateParallax(event){
-    if(reduceMotion.matches)return;
-    const x=(event.clientX/window.innerWidth-.5);
-    const y=(event.clientY/window.innerHeight-.5);
-    const baseX=x*12;
-    const baseY=y*12;
-    rings.forEach((ring,index)=>{
-      const sensitivity=[1,.72,.48][index];
-      ring.style.setProperty("--parallax-x",(-baseX*sensitivity)+"px");
-      ring.style.setProperty("--parallax-y",(-baseY*sensitivity)+"px");
+
+  function reset(){
+    rings.forEach(ring=>{
+      ring.el.style.setProperty(ring.x,"0px");
+      ring.el.style.setProperty(ring.y,"0px");
     });
   }
+
+  function parallax(event){
+    if(reduceMotion.matches)return;
+    const x=(event.clientX/window.innerWidth-.5)*12;
+    const y=(event.clientY/window.innerHeight-.5)*12;
+
+    rings.forEach(ring=>{
+      ring.el.style.setProperty(ring.x,(-x*ring.sensitivity)+"px");
+      ring.el.style.setProperty(ring.y,(-y*ring.sensitivity)+"px");
+    });
+  }
+
   window.addEventListener("mousemove",event=>{
     if(frame)return;
     frame=requestAnimationFrame(()=>{
-      updateParallax(event);
+      parallax(event);
       frame=null;
     });
   },{passive:true});
-  window.addEventListener("mouseleave",()=>{
-    rings.forEach(ring=>{
-      ring.style.setProperty("--parallax-x","0px");
-      ring.style.setProperty("--parallax-y","0px");
-    });
-  });
+
+  window.addEventListener("mouseleave",reset);
+  reduceMotion.addEventListener?.("change",event=>{if(event.matches)reset()});
+
   form.addEventListener("submit",event=>event.preventDefault());
 })();
 </script>
