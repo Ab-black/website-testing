@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="X-axis login and sign-up flip card animation experiment.">
-  <title>Login Flip — Animation Lab</title>
+  <meta name="description" content="Y-axis login and sign-up flip card animation experiment.">
+  <title>Login Flip Y — Animation Lab</title>
   <style>
     :root {
+      /* Existing website-testing palette */
       --bg: #0b0d10;
       --surface: #13171c;
       --surface-raised: #1a1f26;
@@ -20,13 +21,9 @@
       --duration: 700ms;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      min-height: 100%;
-    }
+    html { min-height: 100%; }
 
     body {
       min-height: 100vh;
@@ -41,14 +38,9 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button,
-    input {
-      font: inherit;
-    }
+    button, input { font: inherit; }
 
-    .page {
-      width: min(100%, 440px);
-    }
+    .page { width: min(100%, 440px); }
 
     .lab-label {
       margin: 0 0 14px;
@@ -65,21 +57,26 @@
       perspective: 1200px;
     }
 
+    /*
+      Both faces occupy the same grid cell. This lets the card's height be
+      determined by its content instead of using a restrictive fixed height.
+    */
     .flip-card {
-      position: relative;
+      display: grid;
       width: 100%;
-      min-height: 600px;
+      transform: rotateY(0deg);
       transform-style: preserve-3d;
-      transform: rotateX(0deg);
       transition: transform var(--duration) ease-in-out;
+      position: relative;
     }
 
     .flip-face {
-      position: absolute;
-      inset: 0;
+      grid-area: 1 / 1;
+      position: relative;
       display: flex;
       flex-direction: column;
-      padding: clamp(28px, 7vw, 42px);
+      min-width: 0;
+      padding: clamp(28px, 7vw, 40px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background:
@@ -104,7 +101,7 @@
     }
 
     .flip-face.back {
-      transform: rotateX(180deg);
+      transform: rotateY(180deg);
     }
 
     .brand-mark {
@@ -112,6 +109,7 @@
       height: 46px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       margin-bottom: 30px;
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -155,9 +153,7 @@
       font-weight: 650;
     }
 
-    .input-wrap {
-      position: relative;
-    }
+    .input-wrap { position: relative; }
 
     .input-icon {
       position: absolute;
@@ -185,9 +181,7 @@
       transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
     }
 
-    .field input::placeholder {
-      color: #6f7987;
-    }
+    .field input::placeholder { color: #6f7987; }
 
     .field input:focus {
       border-color: rgba(255, 255, 255, 0.32);
@@ -225,9 +219,7 @@
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
 
     .primary {
       width: 100%;
@@ -242,13 +234,8 @@
       transition: transform 180ms ease, opacity 180ms ease;
     }
 
-    .primary:hover {
-      transform: translateY(-1px);
-    }
-
-    .primary:active {
-      transform: translateY(0);
-    }
+    .primary:hover { transform: translateY(-1px); }
+    .primary:active { transform: translateY(0); }
 
     .switch-copy {
       margin: auto 0 0;
@@ -270,9 +257,7 @@
       font-weight: 750;
     }
 
-    .switch:hover {
-      text-decoration: underline;
-    }
+    .switch:hover { text-decoration: underline; }
 
     .sr-status {
       position: absolute;
@@ -287,40 +272,28 @@
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 20px 14px;
-      }
+      body { padding: 20px 14px; }
 
-      .flip-card {
-        min-height: 570px;
-      }
+      .flip-face { padding: 28px 22px; }
 
-      .flip-face {
-        padding: 28px 22px;
-      }
+      .form-row { align-items: flex-start; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .flip-card {
-        transition-duration: 1ms;
-      }
-
-      .field input,
-      .primary {
-        transition: none;
-      }
+      .flip-card { transition-duration: 1ms; }
+      .field input, .primary { transition: none; }
     }
   </style>
 </head>
 <body>
   <main class="page">
-    <p class="lab-label">Animation Lab · X-Axis Flip</p>
+    <p class="lab-label">Animation Lab · Y-Axis Flip</p>
 
     <div class="flip-container">
       <section class="flip-card" id="authCard" aria-live="polite">
         <div class="flip-face front">
           <div class="brand-mark" aria-hidden="true">VT</div>
-          <h1>Welcome back</h1>
+          <h1>Login</h1>
           <p class="subtitle">Log in to continue to your account.</p>
 
           <form class="form" id="loginForm">
@@ -348,7 +321,7 @@
               <a href="#forgot-password">Forgot password?</a>
             </div>
 
-            <button class="primary" type="submit">Log in</button>
+            <button class="primary" type="submit">Sign In</button>
           </form>
 
           <p class="switch-copy">
@@ -359,7 +332,7 @@
 
         <div class="flip-face back">
           <div class="brand-mark" aria-hidden="true">VT</div>
-          <h1>Create account</h1>
+          <h1>Sign up</h1>
           <p class="subtitle">Create your account and get started.</p>
 
           <form class="form" id="signupForm">
@@ -387,7 +360,7 @@
               </div>
             </div>
 
-            <button class="primary" type="submit">Create account</button>
+            <button class="primary" type="submit">Sign Up</button>
           </form>
 
           <p class="switch-copy">
@@ -410,23 +383,24 @@
       const loginForm = document.getElementById("loginForm");
       const signupForm = document.getElementById("signupForm");
 
-      // Two-state animation: 0 = login, 1 = sign-up.
+      // One shared state: 0 = login, 1 = sign-up.
       let visibleFace = 0;
 
-      function setFace(nextFace) {
-        if (nextFace === visibleFace) return;
+      function toggleFace() {
+        visibleFace = visibleFace === 0 ? 1 : 0;
+        card.style.transform = visibleFace === 1
+          ? "rotateY(180deg)"
+          : "rotateY(0deg)";
 
-        visibleFace = nextFace;
-        card.style.transform = visibleFace === 1 ? "rotateX(180deg)" : "rotateX(0deg)";
         status.textContent = visibleFace === 1
           ? "Sign-up form is active."
           : "Login form is active.";
       }
 
-      showSignup.addEventListener("click", () => setFace(1));
-      showLogin.addEventListener("click", () => setFace(0));
+      showSignup.addEventListener("click", toggleFace);
+      showLogin.addEventListener("click", toggleFace);
 
-      // Visual-only demo: keep the forms from navigating or submitting.
+      // Visual-only demo: no backend is connected.
       loginForm.addEventListener("submit", (event) => event.preventDefault());
       signupForm.addEventListener("submit", (event) => event.preventDefault());
     })();
