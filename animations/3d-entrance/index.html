@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Cinematic 3D login entrance animation experiment.">
-<title>3D Entrance — Animation Lab</title>
+<meta name="description" content="Suspended pendulum login and sign-up animation experiment.">
+<title>Pendulum Login — Animation Lab</title>
 <style>
 :root{
   --bg:#0b0d10;
@@ -17,7 +17,7 @@
   --accent-contrast:#0b0d10;
   --shadow:0 30px 80px rgba(0,0,0,.42);
   --radius:24px;
-  --entrance:1050ms;
+  --swing:950ms;
 }
 *{box-sizing:border-box}
 html{min-height:100%}
@@ -34,47 +34,63 @@ button,input{font:inherit}
 .lab-label{
   margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;
   letter-spacing:.14em;text-align:center;text-transform:uppercase;
-  animation:labelIn 500ms ease-out 80ms both;
 }
 .scene{
-  width:100%;perspective:1500px;perspective-origin:50% 45%;
+  width:100%;
+  perspective:1500px;
+  perspective-origin:50% 42%;
 }
 .card{
-  position:relative;width:100%;min-height:610px;padding:clamp(30px,7vw,44px);
-  border:1px solid var(--border);border-radius:var(--radius);
+  position:relative;
+  width:100%;
+  display:grid;
+  grid-template-areas:"stack";
+  transform-origin:50% -190px;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+.face{
+  grid-area:stack;
+  position:relative;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:clamp(30px,7vw,40px);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
   background:
     linear-gradient(145deg,rgba(255,255,255,.07),transparent 40%),
     var(--surface);
   box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
-  transform-style:preserve-3d;
-  transform:translateZ(-500px) rotateX(32deg) scale(.74);
-  opacity:0;
-  will-change:transform,opacity;
-  animation:cinematicEntrance var(--entrance) ease-out 120ms 1 both;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
   overflow:hidden;
 }
-.card:before{
-  content:"";position:absolute;inset:0;pointer-events:none;
+.face:before{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(120deg,rgba(255,255,255,.055),transparent 32%,transparent 70%,rgba(255,255,255,.018));
 }
-.card:after{
-  content:"";position:absolute;width:240px;height:240px;right:-140px;top:-150px;
+.face:after{
+  content:"";
+  position:absolute;width:240px;height:240px;right:-140px;top:-150px;
   border:1px solid rgba(255,255,255,.07);border-radius:50%;pointer-events:none;
 }
+.back{transform:rotateY(180deg)}
+.card.is-signup{animation:swingToSignup var(--swing) cubic-bezier(.2,.8,.25,1) forwards}
+.card.is-login{animation:swingToLogin var(--swing) cubic-bezier(.2,.8,.25,1) forwards}
 .content{position:relative;z-index:2}
 .brand-mark{
   width:46px;height:46px;display:grid;place-items:center;margin-bottom:30px;
   border:1px solid var(--border);border-radius:14px;background:var(--raised);
   color:var(--text);font-size:.8rem;font-weight:800;letter-spacing:-.04em;
-  animation:contentIn 520ms ease-out 480ms both;
 }
 h1{
   margin:0 0 10px;font-size:clamp(2rem,7vw,2.55rem);line-height:1.05;letter-spacing:-.045em;
-  animation:contentIn 520ms ease-out 520ms both;
 }
 .subtitle{
   margin:0 0 30px;color:var(--muted);font-size:.95rem;line-height:1.6;
-  animation:contentIn 520ms ease-out 560ms both;
 }
 .form{display:grid;gap:16px}
 .field{display:grid;gap:8px}
@@ -115,87 +131,127 @@ a:hover{text-decoration:underline}
 }
 .switch{
   margin-left:4px;padding:0;border:0;background:none;color:var(--text);
-  cursor:pointer;font:inherit;font-weight:750;
+  cursor:pointer;font:inherit;font-weight:750;position:relative;z-index:5;
 }
 .switch:hover{text-decoration:underline}
 .sr-status{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
-@keyframes cinematicEntrance{
-  0%{
-    transform:translateZ(-500px) rotateX(32deg) scale(.74);
-    opacity:0;
-  }
-  62%{
-    transform:translateZ(30px) rotateX(-2deg) scale(1.015);
-    opacity:.92;
-  }
-  100%{
-    transform:translateZ(0) rotateX(0deg) scale(1);
-    opacity:1;
-  }
+.back{pointer-events:none}
+.card.is-signup .front{pointer-events:none}
+.card.is-signup .back{pointer-events:auto}
+.card.is-login .front{pointer-events:auto}
+.card.is-login .back{pointer-events:none}
+
+@keyframes swingToSignup{
+  0%{transform:translateX(0) rotateY(0deg)}
+  48%{transform:translateX(58px) rotateY(88deg)}
+  76%{transform:translateX(24px) rotateY(168deg)}
+  88%{transform:translateX(-5px) rotateY(183deg)}
+  94%{transform:translateX(2px) rotateY(179deg)}
+  100%{transform:translateX(0) rotateY(180deg)}
 }
-@keyframes contentIn{
-  0%{opacity:0;transform:translateY(10px)}
-  100%{opacity:1;transform:translateY(0)}
+@keyframes swingToLogin{
+  0%{transform:translateX(0) rotateY(180deg)}
+  48%{transform:translateX(-58px) rotateY(92deg)}
+  76%{transform:translateX(-24px) rotateY(12deg)}
+  88%{transform:translateX(5px) rotateY(-3deg)}
+  94%{transform:translateX(-2px) rotateY(1deg)}
+  100%{transform:translateX(0) rotateY(0deg)}
 }
-@keyframes labelIn{
-  0%{opacity:0;transform:translateY(6px)}
-  100%{opacity:1;transform:translateY(0)}
-}
+
 @media(max-width:480px){
   body{padding:20px 14px}
-  .card{min-height:570px;padding:28px 22px}
+  .face{padding:28px 22px}
+  .card{transform-origin:50% -155px}
+  .form-row{align-items:flex-start}
 }
 @media(prefers-reduced-motion:reduce){
-  .card,.brand-mark,h1,.subtitle,.lab-label{
-    animation:none!important;
-    transform:none!important;
-    opacity:1!important;
-  }
+  .card.is-signup,.card.is-login{animation:none}
+  .card.is-signup{transform:rotateY(180deg)}
+  .card.is-login{transform:rotateY(0deg)}
   .field input,.primary{transition:none}
 }
 </style>
 </head>
 <body>
 <main class="page">
-  <p class="lab-label">Animation Lab · 3D Entrance</p>
+  <p class="lab-label">Animation Lab · Pendulum Login</p>
 
   <div class="scene">
-    <section class="card" aria-live="polite">
-      <div class="content">
-        <div class="brand-mark" aria-hidden="true">VT</div>
+    <section class="card is-login" id="authCard" aria-live="polite">
+      <div class="face front">
+        <div class="content">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Login</h1>
+          <p class="subtitle">Sign in to continue to your account.</p>
 
-        <h1>Login</h1>
-        <p class="subtitle">Sign in to continue to your account.</p>
-
-        <form class="form" id="loginForm">
-          <div class="field">
-            <label for="loginEmail">Email address</label>
-            <div class="input-wrap">
-              <span class="input-icon" aria-hidden="true">✉</span>
-              <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+          <form class="form" id="loginForm">
+            <div class="field">
+              <label for="loginEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">✉</span>
+                <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+              </div>
             </div>
-          </div>
 
-          <div class="field">
-            <label for="loginPassword">Password</label>
-            <div class="input-wrap">
-              <span class="input-icon" aria-hidden="true">●</span>
-              <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">●</span>
+                <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+              </div>
             </div>
-          </div>
 
-          <div class="form-row">
-            <label class="remember"><input id="rememberMe" type="checkbox">Remember me</label>
-            <a href="#forgot-password">Forgot password?</a>
-          </div>
+            <div class="form-row">
+              <label class="remember"><input id="rememberMe" type="checkbox">Remember me</label>
+              <a href="#forgot-password">Forgot password?</a>
+            </div>
 
-          <button class="primary" type="submit">Sign In</button>
-        </form>
+            <button class="primary" type="submit">Sign In</button>
+          </form>
 
-        <p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
+          <p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
+        </div>
+      </div>
+
+      <div class="face back">
+        <div class="content">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Sign up</h1>
+          <p class="subtitle">Create an account and get started.</p>
+
+          <form class="form" id="signupForm">
+            <div class="field">
+              <label for="signupName">Full name</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">◉</span>
+                <input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="signupEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">✉</span>
+                <input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="signupPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">●</span>
+                <input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+              </div>
+            </div>
+
+            <button class="primary" type="submit">Create Account</button>
+          </form>
+
+          <p class="switch-copy">Already have an account?<button class="switch" id="showLogin" type="button">Log in</button></p>
+        </div>
       </div>
     </section>
   </div>
@@ -205,8 +261,39 @@ a:hover{text-decoration:underline}
 
 <script>
 (()=>{
-  const form=document.getElementById("loginForm");
-  form.addEventListener("submit",event=>event.preventDefault());
+  const card=document.getElementById("authCard");
+  const showSignup=document.getElementById("showSignup");
+  const showLogin=document.getElementById("showLogin");
+  const status=document.getElementById("status");
+  const forms=document.querySelectorAll("form");
+
+  let isSignUpVisible=false;
+  let isTurning=false;
+
+  function toggleAuth(){
+    if(isTurning) return;
+
+    isTurning=true;
+    isSignUpVisible=!isSignUpVisible;
+
+    card.classList.remove("is-login","is-signup");
+    void card.offsetWidth;
+    card.classList.add(isSignUpVisible ? "is-signup" : "is-login");
+
+    status.textContent=isSignUpVisible ? "Sign-up form is active." : "Login form is active.";
+  }
+
+  card.addEventListener("animationend",(event)=>{
+    if(event.animationName!=="swingToSignup" && event.animationName!=="swingToLogin") return;
+    isTurning=false;
+    card.classList.remove("is-signup","is-login");
+    card.classList.add(isSignUpVisible ? "is-signup" : "is-login");
+  });
+
+  showSignup.addEventListener("click",toggleAuth);
+  showLogin.addEventListener("click",toggleAuth);
+
+  forms.forEach(form=>form.addEventListener("submit",event=>event.preventDefault()));
 })();
 </script>
 </body>
