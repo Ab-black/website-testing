@@ -58,16 +58,12 @@
       perspective: 1400px;
     }
 
-    /*
-      The faces share one grid cell, allowing the cube's height to be
-      determined by its content instead of a restrictive fixed height.
-      JS keeps --depth exactly half of the current card width.
-    */
     .cube {
       display: grid;
       width: 100%;
       position: relative;
       transform: rotateY(0deg);
+      transform-origin: center center;
       transform-style: preserve-3d;
       transition: transform var(--duration) ease-in-out;
     }
@@ -90,12 +86,26 @@
       overflow: hidden;
     }
 
+    /*
+      Each face is exactly half the cube width away from its center.
+      JS keeps --depth equal to half of the responsive face width.
+    */
     .login-face {
       transform: translateZ(var(--depth));
+      pointer-events: auto;
     }
 
     .signup-face {
       transform: rotateY(90deg) translateZ(var(--depth));
+      pointer-events: none;
+    }
+
+    .cube.is-signup-visible .login-face {
+      pointer-events: none;
+    }
+
+    .cube.is-signup-visible .signup-face {
+      pointer-events: auto;
     }
 
     .brand-mark {
@@ -251,7 +261,6 @@
       cursor: pointer;
       font: inherit;
       font-weight: 750;
-      pointer-events: auto;
     }
 
     .switch:hover { text-decoration: underline; }
@@ -388,7 +397,9 @@
 
       function toggleFace() {
         isSignUpVisible = !isSignUpVisible;
+        cube.classList.toggle("is-signup-visible", isSignUpVisible);
 
+        // The cube only ever rests at these two exact angles.
         cube.style.transform = isSignUpVisible
           ? "rotateY(-90deg)"
           : "rotateY(0deg)";
