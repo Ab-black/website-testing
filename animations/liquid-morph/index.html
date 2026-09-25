@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Liquid morph login and sign-up animation experiment.">
-<title>Liquid Morph — Animation Lab</title>
+<meta name="description" content="Shutter-style login and sign-up transition animation experiment.">
+<title>Shutter Login — Animation Lab</title>
 <style>
 :root{
   --bg:#0b0d10;
@@ -17,7 +17,11 @@
   --accent-contrast:#0b0d10;
   --shadow:0 30px 80px rgba(0,0,0,.42);
   --radius:24px;
-  --morph:720ms;
+  --slat:#1a1f26;
+  --slat-highlight:rgba(255,255,255,.07);
+  --slat-shadow:rgba(0,0,0,.3);
+  --slat-duration:300ms;
+  --slat-stagger:50ms;
 }
 *{box-sizing:border-box}
 html{min-height:100%}
@@ -28,58 +32,33 @@ body{
     var(--bg);
   color:var(--text);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  overflow:hidden;
 }
 button,input{font:inherit}
 .page{width:min(100%,460px)}
 .lab-label{
-  margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;
+  margin:0 0 16px;color:var(--muted);font-size:.72rem;font-weight:700;
   letter-spacing:.14em;text-align:center;text-transform:uppercase;
 }
 .scene{width:100%;perspective:1200px;perspective-origin:50% 50%}
 .card{
-  position:relative;width:100%;min-height:610px;
+  position:relative;width:100%;
+  display:grid;grid-template-areas:"stack";
   border:1px solid var(--border);border-radius:var(--radius);
-  background:var(--surface);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
-  transform-style:preserve-3d;
-  transition:transform var(--morph) ease-in-out,box-shadow var(--morph) ease-in-out;
+  background:var(--surface);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.045);
   overflow:hidden;
 }
-.card::before{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
-  background:linear-gradient(120deg,rgba(255,255,255,.055),transparent 32%,transparent 70%,rgba(255,255,255,.018));
-}
-.card.is-morphing{
-  transform:scale(.97) rotateX(4deg);
-  box-shadow:0 24px 62px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.04);
-}
 .panel{
-  position:absolute;inset:0;padding:clamp(30px,7vw,44px);
+  grid-area:stack;min-width:0;position:relative;
+  padding:clamp(30px,7vw,42px);
   background:
     linear-gradient(145deg,rgba(255,255,255,.07),transparent 40%),
     var(--surface);
-  clip-path:circle(150% at 50% 50%);
-  transition:clip-path var(--morph) ease-in-out;
-  overflow:hidden;
 }
-.panel-login{
-  z-index:2;
-  clip-path:circle(150% at 50% 50%);
-  pointer-events:auto;
-}
-.panel-signup{
-  z-index:1;
-  clip-path:circle(0% at 50% 50%);
-  pointer-events:none;
-}
-.card.is-signup .panel-login{
-  clip-path:circle(0% at 50% 50%);
-  pointer-events:none;
-}
-.card.is-signup .panel-signup{
-  clip-path:circle(150% at 50% 50%);
-  pointer-events:auto;
-}
+.panel-login{z-index:1}
+.panel-signup{z-index:1}
+.panel.is-hidden{visibility:hidden;pointer-events:none}
+.panel.is-active{visibility:visible;pointer-events:auto}
 .content{position:relative;z-index:2}
 .brand-mark{
   width:46px;height:46px;display:grid;place-items:center;margin-bottom:30px;
@@ -101,8 +80,9 @@ h1{
   pointer-events:none;transform:translateY(-50%);
 }
 .field input{
-  width:100%;height:50px;padding:0 15px 0 44px;border:1px solid var(--border);
-  border-radius:14px;outline:none;background:rgba(255,255,255,.035);color:var(--text);
+  width:100%;height:50px;padding:0 15px 0 44px;
+  border:1px solid var(--border);border-radius:14px;outline:none;
+  background:rgba(255,255,255,.035);color:var(--text);
   transition:border-color 180ms ease,background 180ms ease,box-shadow 180ms ease;
 }
 .field input::placeholder{color:#6f7987}
@@ -133,36 +113,97 @@ a:hover{text-decoration:underline}
 .primary:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,0,0,.2)}
 .primary:active{transform:translateY(0)}
 .switch-copy{
-  margin:42px 0 0;color:var(--muted);
+  margin:40px 0 0;color:var(--muted);
   font-size:.82rem;line-height:1.5;text-align:center;
 }
 .switch{
   margin-left:4px;padding:0;border:0;background:none;color:var(--text);
-  cursor:pointer;font:inherit;font-weight:750;
+  cursor:pointer;font:inherit;font-weight:750;position:relative;z-index:10;
 }
 .switch:hover{text-decoration:underline}
+
+/* Shutter overlay: seven independently rotating vertical slats. */
+.shutter{
+  position:absolute;inset:0;z-index:20;
+  display:grid;grid-template-columns:repeat(7,1fr);
+  pointer-events:none;
+  perspective:1200px;
+  perspective-origin:50% 50%;
+}
+.slat{
+  position:relative;min-width:0;height:100%;
+  transform:rotateY(90deg);
+  transform-origin:50% 50%;
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-left:1px solid rgba(255,255,255,.045);
+  background:
+    linear-gradient(90deg,
+      rgba(0,0,0,.16),
+      var(--slat-highlight) 46%,
+      rgba(0,0,0,.12)
+    ),
+    var(--slat);
+  box-shadow:
+    inset 1px 0 0 rgba(255,255,255,.025),
+    inset -1px 0 0 rgba(0,0,0,.2);
+  transition:transform var(--slat-duration) ease-in-out;
+  will-change:transform;
+}
+.slat:first-child{border-left:0}
+.slat::after{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),transparent);
+  pointer-events:none;
+}
+.card.is-closing .slat,
+.card.is-opening .slat{transform:rotateY(0deg)}
+.card.is-opening .slat{transform:rotateY(90deg)}
+.card.is-closing .slat:nth-child(1),
+.card.is-opening .slat:nth-child(1){transition-delay:0ms}
+.card.is-closing .slat:nth-child(2),
+.card.is-opening .slat:nth-child(2){transition-delay:50ms}
+.card.is-closing .slat:nth-child(3),
+.card.is-opening .slat:nth-child(3){transition-delay:100ms}
+.card.is-closing .slat:nth-child(4),
+.card.is-opening .slat:nth-child(4){transition-delay:150ms}
+.card.is-closing .slat:nth-child(5),
+.card.is-opening .slat:nth-child(5){transition-delay:200ms}
+.card.is-closing .slat:nth-child(6),
+.card.is-opening .slat:nth-child(6){transition-delay:250ms}
+.card.is-closing .slat:nth-child(7),
+.card.is-opening .slat:nth-child(7){transition-delay:300ms}
+
 .status{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
+
 @media(max-width:560px){
   body{padding:20px 14px}
-  .card{min-height:570px}
   .panel{padding:28px 22px}
 }
+@media(max-width:380px){
+  .panel{padding:26px 20px}
+  .form-row{align-items:flex-start}
+}
 @media(prefers-reduced-motion:reduce){
-  .card,.panel,.field input,.primary{transition:none!important}
-  .card.is-morphing{transform:none}
+  .slat{transition:none!important}
+  .card.is-closing .slat{transform:rotateY(0deg)}
+  .card.is-opening .slat{transform:rotateY(90deg)}
+  .field input,.primary{transition:none}
 }
 </style>
 </head>
 <body>
 <main class="page">
-  <p class="lab-label">Animation Lab · Liquid Morph</p>
+  <p class="lab-label">Animation Lab · Shutter Login</p>
 
   <div class="scene">
-    <section class="card" id="card" aria-live="polite">
-      <div class="panel panel-login" id="loginPanel">
+    <section class="card" id="authCard" aria-live="polite">
+      <div class="panel panel-login is-active" id="loginPanel">
         <div class="content">
           <div class="brand-mark" aria-hidden="true">VT</div>
           <h1>Login</h1>
@@ -186,9 +227,7 @@ a:hover{text-decoration:underline}
             </div>
 
             <div class="form-row">
-              <label class="remember">
-                <input id="rememberMe" type="checkbox">Remember me
-              </label>
+              <label class="remember"><input id="rememberMe" type="checkbox">Remember me</label>
               <a href="#forgot-password">Forgot password?</a>
             </div>
 
@@ -202,18 +241,18 @@ a:hover{text-decoration:underline}
         </div>
       </div>
 
-      <div class="panel panel-signup" id="signupPanel">
+      <div class="panel panel-signup is-hidden" id="signupPanel">
         <div class="content">
           <div class="brand-mark" aria-hidden="true">VT</div>
           <h1>Sign up</h1>
-          <p class="subtitle">Create an account to get started.</p>
+          <p class="subtitle">Create an account and get started.</p>
 
           <form class="form" id="signupForm">
             <div class="field">
               <label for="signupName">Full name</label>
               <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">●</span>
-                <input id="signupName" name="name" type="text" placeholder="Your name" autocomplete="name">
+                <span class="input-icon" aria-hidden="true">◉</span>
+                <input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name">
               </div>
             </div>
 
@@ -233,7 +272,7 @@ a:hover{text-decoration:underline}
               </div>
             </div>
 
-            <button class="primary" type="submit">Sign Up</button>
+            <button class="primary" type="submit">Create Account</button>
           </form>
 
           <p class="switch-copy">
@@ -241,6 +280,16 @@ a:hover{text-decoration:underline}
             <button class="switch" id="showLogin" type="button">Log in</button>
           </p>
         </div>
+      </div>
+
+      <div class="shutter" id="shutter" aria-hidden="true">
+        <span class="slat"></span>
+        <span class="slat"></span>
+        <span class="slat"></span>
+        <span class="slat"></span>
+        <span class="slat"></span>
+        <span class="slat"></span>
+        <span class="slat"></span>
       </div>
     </section>
   </div>
@@ -250,61 +299,78 @@ a:hover{text-decoration:underline}
 
 <script>
 (()=>{
-  const card=document.getElementById("card");
+  const card=document.getElementById("authCard");
+  const loginPanel=document.getElementById("loginPanel");
+  const signupPanel=document.getElementById("signupPanel");
   const showSignup=document.getElementById("showSignup");
   const showLogin=document.getElementById("showLogin");
-  const loginForm=document.getElementById("loginForm");
-  const signupForm=document.getElementById("signupForm");
   const status=document.getElementById("status");
+  const slats=[...document.querySelectorAll(".slat")];
   const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)");
-  const duration=720;
-  let isSignup=false;
-  let turning=false;
 
-  function setPanelAccess(signup){
-    document.getElementById("loginPanel").style.pointerEvents=signup?"none":"auto";
-    document.getElementById("signupPanel").style.pointerEvents=signup?"auto":"none";
+  const slatDuration=300;
+  const slatStagger=50;
+  const total=slatDuration+(slats.length-1)*slatStagger;
+  let isSignUpVisible=false;
+  let isAnimating=false;
+
+  function setActivePanel(signup){
+    loginPanel.classList.toggle("is-active",!signup);
+    loginPanel.classList.toggle("is-hidden",signup);
+    signupPanel.classList.toggle("is-active",signup);
+    signupPanel.classList.toggle("is-hidden",!signup);
   }
 
-  function morph(toSignup){
-    if(turning || toSignup===isSignup)return;
-    turning=true;
-    card.classList.add("is-morphing");
-
-    if(toSignup){
-      card.classList.add("is-signup");
-      status.textContent="Sign-up form is active.";
-    }else{
-      card.classList.remove("is-signup");
-      status.textContent="Login form is active.";
-    }
-
-    if(reduceMotion.matches){
-      isSignup=toSignup;
-      setPanelAccess(toSignup);
-      card.classList.remove("is-morphing");
-      turning=false;
-      return;
-    }
-
-    setTimeout(()=>{
-      isSignup=toSignup;
-      setPanelAccess(toSignup);
-    },duration/2);
-
-    setTimeout(()=>{
-      card.classList.remove("is-morphing");
-      turning=false;
-    },duration);
+  function finishTransition(){
+    card.classList.remove("is-closing","is-opening");
+    setActivePanel(isSignUpVisible);
+    isAnimating=false;
   }
 
-  showSignup.addEventListener("click",()=>morph(true));
-  showLogin.addEventListener("click",()=>morph(false));
+  function toggleAuth(){
+    if(isAnimating)return;
 
-  loginForm.addEventListener("submit",event=>event.preventDefault());
-  signupForm.addEventListener("submit",event=>event.preventDefault());
+    const nextState=!isSignUpVisible;
+    isAnimating=true;
 
-  setPanelAccess(false);
+    // Close the shutters over the currently visible form.
+    card.classList.remove("is-opening");
+    void card.offsetWidth;
+    card.classList.add("is-closing");
+
+    const swapAt=reduceMotion.matches ? 0 : total;
+
+    setTimeout(()=>{
+      // At this exact point the final slat has reached 0deg and fully
+      // covers the card, so the underlying content can be swapped unseen.
+      isSignUpVisible=nextState;
+      setActivePanel(isSignUpVisible);
+      status.textContent=isSignUpVisible
+        ? "Sign-up form is active."
+        : "Login form is active.";
+
+      card.classList.remove("is-closing");
+      void card.offsetWidth;
+      card.classList.add("is-opening");
+
+      if(reduceMotion.matches){
+        finishTransition();
+      }else{
+        setTimeout(finishTransition,total);
+      }
+    },swapAt);
+  }
+
+  showSignup.addEventListener("click",toggleAuth);
+  showLogin.addEventListener("click",toggleAuth);
+
+  document.querySelectorAll("form").forEach(form=>{
+    form.addEventListener("submit",event=>event.preventDefault());
+  });
+
+  // Keep both panels in layout so the card height follows whichever
+  // form needs more room, while only the active panel receives pointer input.
+  setActivePanel(false);
 })();
 </script>
 </body>
