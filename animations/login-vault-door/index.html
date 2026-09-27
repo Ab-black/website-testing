@@ -3,44 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Vault-door login and sign-up animation experiment.">
-<title>Vault Door — Animation Lab</title>
+<meta name="description" content="Premium book-cover login and sign-up animation experiment.">
+<title>Book Cover Auth — Animation Lab</title>
 <style>
-:root{--bg:#0b0d10;--surface:#13171c;--raised:#1a1f26;--text:#f5f7fa;--muted:#9aa4b2;--border:rgba(255,255,255,.1);--accent:#fff;--accent-contrast:#0b0d10;--shadow:0 28px 80px rgba(0,0,0,.42);--radius:24px;--duration:800ms}
-*{box-sizing:border-box}html{min-height:100%}body{min-height:100vh;margin:0;display:grid;place-items:center;padding:32px 20px;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 38%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}.page{width:min(100%,440px)}.lab-label{margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-align:center;text-transform:uppercase}.vault-container{width:100%;perspective:1400px}.vault{position:relative;width:100%;display:grid;transform-style:preserve-3d}.panel{grid-area:1/1;position:relative;display:flex;flex-direction:column;min-width:0;padding:clamp(28px,7vw,40px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}.panel:before{content:"";position:absolute;top:-120px;right:-120px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.045);pointer-events:none}.signup-panel{z-index:1;background:linear-gradient(145deg,rgba(255,255,255,.045),transparent 38%),var(--surface);box-shadow:var(--shadow);pointer-events:none}.door-panel{z-index:2;transform-origin:left center;transform:rotateY(0deg);background:linear-gradient(145deg,rgba(255,255,255,.08),transparent 35%),linear-gradient(180deg,var(--raised),var(--surface));box-shadow:var(--shadow);transition:transform var(--duration) ease-in-out,opacity var(--duration) ease-in-out,box-shadow var(--duration) ease-in-out;backface-visibility:hidden;-webkit-backface-visibility:hidden}.vault.is-open .door-panel{transform:rotateY(-120deg);opacity:.18;box-shadow:34px 34px 65px rgba(0,0,0,.5)}.vault.is-open .signup-panel{pointer-events:auto}.handle{position:absolute;right:24px;top:50%;z-index:3;width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:50%;background:var(--raised);box-shadow:inset 0 0 0 7px rgba(255,255,255,.025),0 8px 20px rgba(0,0,0,.25);transform:translateY(-50%);pointer-events:none}.handle:after{content:"";position:absolute;left:50%;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translate(-50%,-50%)}.brand-mark{width:46px;height:46px;display:grid;place-items:center;flex:0 0 auto;margin-bottom:30px;border:1px solid var(--border);border-radius:14px;background:var(--raised);color:var(--text);font-size:.8rem;font-weight:800;letter-spacing:-.04em}h1{position:relative;margin:0 0 10px;font-size:clamp(1.9rem,7vw,2.45rem);line-height:1.05;letter-spacing:-.045em}.subtitle{position:relative;margin:0 0 30px;color:var(--muted);font-size:.95rem;line-height:1.6}.form{position:relative;display:grid;gap:16px}.field{display:grid;gap:8px}.field label{color:var(--text);font-size:.78rem;font-weight:650}.input-wrap{position:relative}.input-icon{position:absolute;top:50%;left:15px;width:18px;height:18px;display:grid;place-items:center;color:var(--muted);font-size:.9rem;pointer-events:none;transform:translateY(-50%)}.field input{width:100%;height:50px;padding:0 15px 0 44px;border:1px solid var(--border);border-radius:14px;outline:none;background:rgba(255,255,255,.035);color:var(--text);transition:border-color 180ms ease,background 180ms ease,box-shadow 180ms ease}.field input::placeholder{color:#6f7987}.field input:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.055);box-shadow:0 0 0 4px rgba(255,255,255,.055)}.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}.remember{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.78rem;cursor:pointer}.remember input{width:15px;height:15px;accent-color:var(--accent)}a{color:var(--text);font-size:.78rem;font-weight:650;text-decoration:none}a:hover{text-decoration:underline}.primary{width:100%;min-height:50px;margin-top:8px;border:0;border-radius:14px;background:var(--accent);color:var(--accent-contrast);cursor:pointer;font-weight:750;transition:transform 180ms ease,opacity 180ms ease}.primary:hover{transform:translateY(-1px)}.primary:active{transform:translateY(0)}.switch-copy{margin:auto 0 0;padding-top:28px;color:var(--muted);font-size:.82rem;line-height:1.5;text-align:center}.switch{position:relative;z-index:4;margin-left:4px;padding:0;border:0;background:none;color:var(--text);cursor:pointer;font:inherit;font-weight:750}.switch:hover{text-decoration:underline}.sr-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:480px){body{padding:20px 14px}.panel{padding:28px 22px}.handle{right:15px;width:42px;height:42px}}@media(prefers-reduced-motion:reduce){.door-panel{transition-duration:1ms}.field input,.primary{transition:none}}
+:root{
+  --bg:#0b0d10;--surface:#13171c;--raised:#1a1f26;--text:#f5f7fa;--muted:#9aa4b2;
+  --border:rgba(255,255,255,.1);--accent:#fff;--accent-contrast:#0b0d10;
+  --card:#f5f7fa;--card-soft:#eef1f4;--card-tint:#e9edf2;--card-text:#0b0d10;--card-muted:#66717f;
+  --card-border:rgba(11,13,16,.1);--shadow:0 34px 90px rgba(0,0,0,.38),0 12px 30px rgba(0,0,0,.16);
+  --field-shadow:inset 0 2px 5px rgba(11,13,16,.08),inset 0 -1px 0 rgba(255,255,255,.78);
+  --radius:28px;--duration:880ms;
+}
+*{box-sizing:border-box}html{min-height:100%}
+body{min-height:100vh;margin:0;display:grid;place-items:center;padding:32px 20px;overflow-x:hidden;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 38%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
+.page{width:min(100%,470px)}.lab-label{margin:0 0 14px;color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-align:center;text-transform:uppercase}
+.book-container{width:100%;perspective:1500px}
+.book{position:relative;display:grid;width:100%;transform-style:preserve-3d}
+.panel{grid-area:1/1;position:relative;display:flex;flex-direction:column;min-width:0;padding:clamp(30px,7vw,40px);border:1px solid var(--card-border);border-radius:var(--radius);background:linear-gradient(145deg,var(--card),var(--card-soft) 56%,var(--card-tint));box-shadow:var(--shadow);color:var(--card-text)}
+.signup-panel{z-index:1}
+.cover{z-index:2;transform-origin:left center;transform:rotateY(0deg);transition:transform var(--duration) ease-in-out,box-shadow var(--duration) ease-in-out;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(145deg,#fff,var(--card-soft) 60%,var(--card-tint));overflow:visible}
+.cover:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;opacity:0;background:linear-gradient(90deg,rgba(11,13,16,.42) 0%,rgba(11,13,16,.2) 12%,transparent 48%,rgba(255,255,255,.08) 100%);transition:opacity 120ms linear}
+.book.is-open .cover{transform:rotateY(-178deg);box-shadow:38px 20px 70px rgba(0,0,0,.34),inset 18px 0 30px rgba(11,13,16,.12)}
+.book.is-opening .cover:after{opacity:1}
+.spine{position:absolute;left:-1px;top:0;bottom:0;width:9px;z-index:4;border-radius:var(--radius) 0 0 var(--radius);background:linear-gradient(90deg,rgba(11,13,16,.24),rgba(11,13,16,.08),transparent);pointer-events:none}
+.brand-mark{width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;margin-bottom:26px;border:1px solid rgba(11,13,16,.09);border-radius:14px;background:linear-gradient(145deg,#fff,var(--card-soft));box-shadow:0 5px 12px rgba(11,13,16,.08),inset 0 1px 0 rgba(255,255,255,.9);color:var(--card-text);font-size:.78rem;font-weight:850;letter-spacing:-.04em}
+h1{margin:0 0 8px;color:var(--card-text);font-size:clamp(1.9rem,7vw,2.45rem);line-height:1.05;letter-spacing:-.045em}.subtitle{margin:0 0 28px;color:var(--card-muted);font-size:.94rem;line-height:1.55}
+.form{display:grid;gap:16px}.field{display:grid;gap:7px}.field label{color:var(--card-muted);font-size:.68rem;font-weight:800;letter-spacing:.12em;line-height:1.2;text-transform:uppercase}
+.field input{width:100%;height:52px;padding:0 15px;border:1px solid rgba(11,13,16,.08);border-radius:14px;outline:none;background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(233,237,242,.94));box-shadow:var(--field-shadow);color:var(--card-text);transition:border-color 180ms ease,box-shadow 180ms ease,background 180ms ease}
+.field input::placeholder{color:#89929e}.field input:focus{border-color:rgba(11,13,16,.22);background:linear-gradient(160deg,#fff,rgba(233,237,242,.98));box-shadow:inset 0 2px 5px rgba(11,13,16,.06),0 0 0 4px rgba(11,13,16,.055)}
+.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:1px}.remember{display:inline-flex;align-items:center;gap:8px;color:var(--card-muted);font-size:.76rem;cursor:pointer}.remember input{width:15px;height:15px;margin:0;accent-color:var(--card-text)}
+.forgot{color:var(--card-text);font-size:.76rem;font-weight:750;text-decoration:none}.forgot:hover{text-decoration:underline}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}.action{min-width:0;min-height:50px;padding:0 16px;border-radius:999px;cursor:pointer;font-size:.82rem;font-weight:800;transition:transform 180ms ease,box-shadow 180ms ease,background 180ms ease}.action:hover{transform:translateY(-1px)}.action:active{transform:translateY(0)}
+.primary{border:1px solid var(--card-text);background:var(--card-text);color:var(--accent);box-shadow:0 7px 16px rgba(11,13,16,.16)}.secondary{border:1px solid rgba(11,13,16,.17);background:rgba(255,255,255,.34);color:var(--card-text)}.secondary:hover{background:rgba(255,255,255,.58)}
+.switch-copy{margin:24px 0 0;padding-top:18px;border-top:1px solid rgba(11,13,16,.08);color:var(--card-muted);font-size:.79rem;line-height:1.5;text-align:center}.switch{margin-left:4px;padding:0;border:0;background:none;color:var(--card-text);cursor:pointer;font:inherit;font-weight:800}.switch:hover{text-decoration:underline}
+.sr-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid rgba(255,255,255,.55);outline-offset:3px}
+@media(max-width:480px){body{padding:20px 14px}.panel{padding:28px 22px}.spine{width:7px}}
+@media(max-width:350px){.panel{padding:26px 18px}.actions{gap:8px}.action{padding-inline:10px}}
+@media(prefers-reduced-motion:reduce){.cover{transition-duration:1ms}.cover:after{transition:none}.field input,.action{transition:none}}
 </style>
 </head>
 <body>
 <main class="page">
-<p class="lab-label">Animation Lab · Vault Door</p>
-<div class="vault-container">
-<section class="vault" id="vault" aria-live="polite">
+<p class="lab-label">Animation Lab · Book Cover</p>
+<div class="book-container">
+<section class="book" id="book" aria-live="polite">
 <div class="panel signup-panel">
 <div class="brand-mark" aria-hidden="true">VT</div><h1>Sign up</h1><p class="subtitle">Create your account and get started.</p>
 <form class="form" id="signupForm">
-<div class="field"><label for="signupName">Full name</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name"></div></div>
-<div class="field"><label for="signupEmail">Email address</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">✉</span><input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div></div>
-<div class="field"><label for="signupPassword">Password</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password"></div></div>
-<button class="primary" type="submit">Sign Up</button>
-</form>
-<p class="switch-copy">Already have an account?<button class="switch" id="showLogin" type="button">Log in</button></p>
+<div class="field"><label for="signupName">Full name</label><input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name"></div>
+<div class="field"><label for="signupEmail">Email address</label><input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+<div class="field"><label for="signupPassword">Password</label><input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password"></div>
+<div class="actions"><button class="action primary" type="submit">Sign Up</button><button class="action secondary" id="showLogin" type="button">Log In</button></div>
+</form><p class="switch-copy">Already have an account?<button class="switch" data-show-login type="button">Log in</button></p>
 </div>
-<div class="panel door-panel">
-<span class="handle" aria-hidden="true"></span><div class="brand-mark" aria-hidden="true">VT</div><h1>Login</h1><p class="subtitle">Sign in to continue to your account.</p>
+<div class="panel cover">
+<span class="spine" aria-hidden="true"></span>
+<div class="brand-mark" aria-hidden="true">VT</div><h1>Login</h1><p class="subtitle">Sign in to continue to your account.</p>
 <form class="form" id="loginForm">
-<div class="field"><label for="loginEmail">Email address</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">✉</span><input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div></div>
-<div class="field"><label for="loginPassword">Password</label><div class="input-wrap"><span class="input-icon" aria-hidden="true">●</span><input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password"></div></div>
-<div class="form-row"><label class="remember"><input id="rememberMe" type="checkbox">Remember me</label><a href="#forgot-password">Forgot password?</a></div>
-<button class="primary" type="submit">Sign In</button>
-</form>
-<p class="switch-copy">Don't have an account?<button class="switch" id="showSignup" type="button">Sign up</button></p>
+<div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+<div class="field"><label for="loginPassword">Password</label><input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password"></div>
+<div class="form-row"><label class="remember"><input id="rememberMe" type="checkbox">Remember me</label><a class="forgot" href="#forgot-password">Forgot password?</a></div>
+<div class="actions"><button class="action primary" type="submit">Sign In</button><button class="action secondary" id="showSignup" type="button">Create Account</button></div>
+</form><p class="switch-copy">New here?<button class="switch" data-show-signup type="button">Sign up</button></p>
 </div>
 </section>
 </div>
 <p class="sr-status" id="doorStatus" aria-live="polite">Login form is active.</p>
 </main>
 <script>
-(()=>{const vault=document.getElementById("vault"),showSignup=document.getElementById("showSignup"),showLogin=document.getElementById("showLogin"),status=document.getElementById("doorStatus"),loginForm=document.getElementById("loginForm"),signupForm=document.getElementById("signupForm");let isSignUpVisible=false;function toggleDoor(){isSignUpVisible=!isSignUpVisible;vault.classList.toggle("is-open",isSignUpVisible);status.textContent=isSignUpVisible?"Sign-up form is active.":"Login form is active"}showSignup.addEventListener("click",toggleDoor);showLogin.addEventListener("click",toggleDoor);loginForm.addEventListener("submit",e=>e.preventDefault());signupForm.addEventListener("submit",e=>e.preventDefault())})();
+(()=>{const book=document.getElementById("book"),showSignup=document.getElementById("showSignup"),showLogin=document.getElementById("showLogin"),status=document.getElementById("doorStatus"),loginForm=document.getElementById("loginForm"),signupForm=document.getElementById("signupForm");let isSignUpVisible=false;
+function render(){book.classList.toggle("is-open",isSignUpVisible);status.textContent=isSignUpVisible?"Sign-up form is active.":"Login form is active."}
+function setSignUp(){isSignUpVisible=true;render()}function setLogin(){isSignUpVisible=false;render()}
+function playCoverState(open){book.classList.add("is-opening");window.setTimeout(()=>book.classList.remove("is-opening"),Math.max(1,880-120))}
+showSignup.addEventListener("click",()=>{setSignUp();playCoverState(true)});showLogin.addEventListener("click",()=>{setLogin();playCoverState(false)});
+document.querySelectorAll("[data-show-signup]").forEach(el=>el.addEventListener("click",()=>{setSignUp();playCoverState(true)}));
+document.querySelectorAll("[data-show-login]").forEach(el=>el.addEventListener("click",()=>{setLogin();playCoverState(false)}));
+loginForm.addEventListener("submit",e=>e.preventDefault());signupForm.addEventListener("submit",e=>e.preventDefault());
+render()})();
 </script>
 </body>
 </html>
