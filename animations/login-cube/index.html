@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="3D cube-style login and sign-up animation experiment.">
+  <meta name="description" content="Premium four-face 3D cube login and sign-up animation experiment.">
   <title>Login Cube — Animation Lab</title>
   <style>
     :root {
@@ -16,10 +16,23 @@
       --border: rgba(255, 255, 255, 0.1);
       --accent: #ffffff;
       --accent-contrast: #0b0d10;
-      --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
-      --radius: 24px;
-      --duration: 820ms;
-      --depth: 220px;
+
+      /* Premium card tones derived from the existing palette */
+      --card: #f5f7fa;
+      --card-soft: #eef1f4;
+      --card-tint: #e9edf2;
+      --card-text: #0b0d10;
+      --card-muted: #66717f;
+      --card-border: rgba(11, 13, 16, 0.1);
+      --card-shadow:
+        0 34px 90px rgba(0, 0, 0, 0.38),
+        0 12px 30px rgba(0, 0, 0, 0.16);
+      --field-shadow:
+        inset 0 2px 5px rgba(11, 13, 16, 0.08),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.78);
+      --radius: 28px;
+      --duration: 720ms;
+      --depth: 235px;
     }
 
     * { box-sizing: border-box; }
@@ -32,6 +45,7 @@
       display: grid;
       place-items: center;
       padding: 32px 20px;
+      overflow-x: hidden;
       background:
         radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.07), transparent 38%),
         var(--bg);
@@ -40,8 +54,11 @@
     }
 
     button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
 
-    .page { width: min(100%, 440px); }
+    .page {
+      width: min(100%, 470px);
+    }
 
     .lab-label {
       margin: 0 0 14px;
@@ -55,17 +72,23 @@
 
     .cube-container {
       width: 100%;
-      perspective: 1400px;
+      perspective: 1500px;
     }
 
+    /*
+      All four panels share the same grid cell. The row height follows the
+      tallest form, while each face is pushed exactly half the card width
+      from the cube's vertical center.
+    */
     .cube {
+      position: relative;
       display: grid;
       width: 100%;
-      position: relative;
       transform: rotateY(0deg);
       transform-origin: center center;
       transform-style: preserve-3d;
       transition: transform var(--duration) ease-in-out;
+      will-change: transform;
     }
 
     .cube-face {
@@ -73,60 +96,55 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      width: 100%;
       min-width: 0;
-      padding: clamp(28px, 7vw, 40px);
-      border: 1px solid var(--border);
+      padding: clamp(30px, 7vw, 40px);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius);
       background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.045), transparent 38%),
-        var(--surface);
-      box-shadow: var(--shadow);
+        linear-gradient(145deg, var(--card), var(--card-soft) 56%, var(--card-tint));
+      box-shadow: var(--card-shadow);
+      color: var(--card-text);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      overflow: hidden;
     }
 
-    /*
-      Each face is exactly half the cube width away from its center.
-      JS keeps --depth equal to half of the responsive face width.
-    */
-    .login-face {
-      transform: translateZ(var(--depth));
-      pointer-events: auto;
-    }
+    .cube-face.login-1 { transform: rotateY(0deg) translateZ(var(--depth)); }
+    .cube-face.signup-1 { transform: rotateY(90deg) translateZ(var(--depth)); }
+    .cube-face.login-2 { transform: rotateY(180deg) translateZ(var(--depth)); }
+    .cube-face.signup-2 { transform: rotateY(270deg) translateZ(var(--depth)); }
 
-    .signup-face {
-      transform: rotateY(90deg) translateZ(var(--depth));
+    .cube-face:not(.is-active) {
       pointer-events: none;
     }
 
-    .cube.is-signup-visible .login-face {
-      pointer-events: none;
-    }
-
-    .cube.is-signup-visible .signup-face {
+    .cube-face.is-active {
       pointer-events: auto;
     }
 
     .brand-mark {
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       display: grid;
       place-items: center;
       flex: 0 0 auto;
-      margin-bottom: 30px;
-      border: 1px solid var(--border);
+      margin-bottom: 26px;
+      border: 1px solid rgba(11, 13, 16, 0.09);
       border-radius: 14px;
-      background: var(--surface-raised);
-      color: var(--text);
-      font-size: 0.8rem;
-      font-weight: 800;
+      background: linear-gradient(145deg, #ffffff, var(--card-soft));
+      box-shadow:
+        0 5px 12px rgba(11, 13, 16, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      color: var(--card-text);
+      font-size: 0.78rem;
+      font-weight: 850;
       letter-spacing: -0.04em;
     }
 
     h1 {
       position: relative;
-      margin: 0 0 10px;
+      margin: 0 0 8px;
+      color: var(--card-text);
       font-size: clamp(1.9rem, 7vw, 2.45rem);
       line-height: 1.05;
       letter-spacing: -0.045em;
@@ -134,10 +152,10 @@
 
     .subtitle {
       position: relative;
-      margin: 0 0 30px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
+      margin: 0 0 28px;
+      color: var(--card-muted);
+      font-size: 0.94rem;
+      line-height: 1.55;
     }
 
     .form {
@@ -148,49 +166,44 @@
 
     .field {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .field label {
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 650;
-    }
-
-    .input-wrap { position: relative; }
-
-    .input-icon {
-      position: absolute;
-      top: 50%;
-      left: 15px;
-      width: 18px;
-      height: 18px;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-      pointer-events: none;
-      transform: translateY(-50%);
+      color: var(--card-muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
 
     .field input {
       width: 100%;
-      height: 50px;
-      padding: 0 15px 0 44px;
-      border: 1px solid var(--border);
+      height: 52px;
+      padding: 0 15px;
+      border: 1px solid rgba(11, 13, 16, 0.08);
       border-radius: 14px;
       outline: none;
-      background: rgba(255, 255, 255, 0.035);
-      color: var(--text);
-      transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(233, 237, 242, 0.94));
+      box-shadow: var(--field-shadow);
+      color: var(--card-text);
+      transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
     }
 
-    .field input::placeholder { color: #6f7987; }
+    .field input::placeholder { color: #89929e; }
 
     .field input:focus {
-      border-color: rgba(255, 255, 255, 0.32);
-      background: rgba(255, 255, 255, 0.055);
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.055);
+      border-color: rgba(11, 13, 16, 0.22);
+      background:
+        linear-gradient(160deg, #ffffff, rgba(233, 237, 242, 0.98));
+      box-shadow:
+        inset 0 2px 5px rgba(11, 13, 16, 0.06),
+        0 0 0 4px rgba(11, 13, 16, 0.055);
     }
 
     .form-row {
@@ -198,69 +211,94 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .remember {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted);
-      font-size: 0.78rem;
+      color: var(--card-muted);
+      font-size: 0.76rem;
       cursor: pointer;
     }
 
     .remember input {
       width: 15px;
       height: 15px;
-      accent-color: var(--accent);
+      margin: 0;
+      accent-color: var(--card-text);
     }
 
-    a {
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 650;
+    .forgot {
+      color: var(--card-text);
+      font-size: 0.76rem;
+      font-weight: 750;
       text-decoration: none;
     }
 
-    a:hover { text-decoration: underline; }
+    .forgot:hover { text-decoration: underline; }
 
-    .primary {
-      width: 100%;
-      min-height: 50px;
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
       margin-top: 8px;
-      border: 0;
-      border-radius: 14px;
-      background: var(--accent);
-      color: var(--accent-contrast);
-      cursor: pointer;
-      font-weight: 750;
-      transition: transform 180ms ease, opacity 180ms ease;
     }
 
-    .primary:hover { transform: translateY(-1px); }
-    .primary:active { transform: translateY(0); }
+    .action {
+      min-width: 0;
+      min-height: 50px;
+      padding: 0 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 800;
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+    }
+
+    .action:hover { transform: translateY(-1px); }
+    .action:active { transform: translateY(0); }
+
+    .action.primary {
+      border: 1px solid var(--card-text);
+      background: var(--card-text);
+      color: var(--accent);
+      box-shadow: 0 7px 16px rgba(11, 13, 16, 0.16);
+    }
+
+    .action.secondary {
+      border: 1px solid rgba(11, 13, 16, 0.17);
+      background: rgba(255, 255, 255, 0.34);
+      color: var(--card-text);
+    }
+
+    .action.secondary:hover {
+      background: rgba(255, 255, 255, 0.58);
+    }
 
     .switch-copy {
-      margin: auto 0 0;
-      padding-top: 28px;
-      color: var(--muted);
-      font-size: 0.82rem;
+      margin: 24px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid rgba(11, 13, 16, 0.08);
+      color: var(--card-muted);
+      font-size: 0.79rem;
       line-height: 1.5;
       text-align: center;
     }
 
     .switch {
-      position: relative;
-      z-index: 3;
       margin-left: 4px;
       padding: 0;
       border: 0;
       background: none;
-      color: var(--text);
+      color: var(--card-text);
       cursor: pointer;
       font: inherit;
-      font-weight: 750;
+      font-weight: 800;
     }
 
     .switch:hover { text-decoration: underline; }
@@ -277,15 +315,50 @@
       border: 0;
     }
 
+    :focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.55);
+      outline-offset: 3px;
+    }
+
     @media (max-width: 480px) {
       body { padding: 20px 14px; }
-      .cube-face { padding: 28px 22px; }
-      .form-row { align-items: flex-start; }
+
+      .cube-face {
+        padding: 28px 22px;
+      }
+
+      .brand-mark {
+        margin-bottom: 22px;
+      }
+
+      .form-row {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .cube-face {
+        padding: 26px 18px;
+      }
+
+      .actions {
+        gap: 8px;
+      }
+
+      .action {
+        padding-inline: 10px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .cube { transition-duration: 1ms; }
-      .field input, .primary { transition: none; }
+      .cube {
+        transition-duration: 1ms;
+      }
+
+      .field input,
+      .action {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -295,7 +368,8 @@
 
     <div class="cube-container">
       <section class="cube" id="authCube" aria-live="polite">
-        <div class="cube-face login-face">
+        <!-- Face 1: login, 0° -->
+        <div class="cube-face login-1 is-active">
           <div class="brand-mark" aria-hidden="true">VT</div>
           <h1>Login</h1>
           <p class="subtitle">Sign in to continue to your account.</p>
@@ -303,18 +377,12 @@
           <form class="form" id="loginForm">
             <div class="field">
               <label for="loginEmail">Email address</label>
-              <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">✉</span>
-                <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
-              </div>
+              <input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
             </div>
 
             <div class="field">
               <label for="loginPassword">Password</label>
-              <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">●</span>
-                <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
-              </div>
+              <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
             </div>
 
             <div class="form-row">
@@ -322,54 +390,123 @@
                 <input id="rememberMe" type="checkbox">
                 Remember me
               </label>
-              <a href="#forgot-password">Forgot password?</a>
+              <a class="forgot" href="#forgot-password">Forgot password?</a>
             </div>
 
-            <button class="primary" type="submit">Sign In</button>
+            <div class="actions">
+              <button class="action primary" type="submit">Sign In</button>
+              <button class="action secondary turn-trigger" type="button">Create Account</button>
+            </div>
           </form>
 
           <p class="switch-copy">
-            Don't have an account?
-            <button class="switch" id="showSignup" type="button">Sign up</button>
+            New here?
+            <button class="switch turn-trigger" type="button">Sign up</button>
           </p>
         </div>
 
-        <div class="cube-face signup-face">
+        <!-- Face 2: sign-up, 90° -->
+        <div class="cube-face signup-1">
           <div class="brand-mark" aria-hidden="true">VT</div>
           <h1>Sign up</h1>
           <p class="subtitle">Create your account and get started.</p>
 
-          <form class="form" id="signupForm">
+          <form class="form" data-form="signup">
             <div class="field">
               <label for="signupName">Full name</label>
-              <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">●</span>
-                <input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name">
-              </div>
+              <input id="signupName" name="name" type="text" placeholder="Your full name" autocomplete="name">
             </div>
 
             <div class="field">
               <label for="signupEmail">Email address</label>
-              <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">✉</span>
-                <input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
-              </div>
+              <input id="signupEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email">
             </div>
 
             <div class="field">
               <label for="signupPassword">Password</label>
-              <div class="input-wrap">
-                <span class="input-icon" aria-hidden="true">●</span>
-                <input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
-              </div>
+              <input id="signupPassword" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
             </div>
 
-            <button class="primary" type="submit">Sign Up</button>
+            <div class="actions">
+              <button class="action primary" type="submit">Sign Up</button>
+              <button class="action secondary turn-trigger" type="button">Log In</button>
+            </div>
           </form>
 
           <p class="switch-copy">
-            Already have an account?
-            <button class="switch" id="showLogin" type="button">Log in</button>
+            Have an account?
+            <button class="switch turn-trigger" type="button">Continue</button>
+          </p>
+        </div>
+
+        <!-- Face 3: login duplicate, 180° -->
+        <div class="cube-face login-2">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Login</h1>
+          <p class="subtitle">Sign in to continue to your account.</p>
+
+          <form class="form" data-form="login-duplicate">
+            <div class="field">
+              <label for="loginEmailDuplicate">Email address</label>
+              <input id="loginEmailDuplicate" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="loginPasswordDuplicate">Password</label>
+              <input id="loginPasswordDuplicate" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+
+            <div class="form-row">
+              <label class="remember">
+                <input type="checkbox">
+                Remember me
+              </label>
+              <a class="forgot" href="#forgot-password">Forgot password?</a>
+            </div>
+
+            <div class="actions">
+              <button class="action primary" type="submit">Sign In</button>
+              <button class="action secondary turn-trigger" type="button">Create Account</button>
+            </div>
+          </form>
+
+          <p class="switch-copy">
+            New here?
+            <button class="switch turn-trigger" type="button">Sign up</button>
+          </p>
+        </div>
+
+        <!-- Face 4: sign-up duplicate, 270° -->
+        <div class="cube-face signup-2">
+          <div class="brand-mark" aria-hidden="true">VT</div>
+          <h1>Sign up</h1>
+          <p class="subtitle">Create your account and get started.</p>
+
+          <form class="form" data-form="signup-duplicate">
+            <div class="field">
+              <label for="signupNameDuplicate">Full name</label>
+              <input id="signupNameDuplicate" name="name" type="text" placeholder="Your full name" autocomplete="name">
+            </div>
+
+            <div class="field">
+              <label for="signupEmailDuplicate">Email address</label>
+              <input id="signupEmailDuplicate" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+
+            <div class="field">
+              <label for="signupPasswordDuplicate">Password</label>
+              <input id="signupPasswordDuplicate" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+            </div>
+
+            <div class="actions">
+              <button class="action primary" type="submit">Sign Up</button>
+              <button class="action secondary turn-trigger" type="button">Log In</button>
+            </div>
+          </form>
+
+          <p class="switch-copy">
+            Have an account?
+            <button class="switch turn-trigger" type="button">Continue</button>
           </p>
         </div>
       </section>
@@ -381,43 +518,50 @@
   <script>
     (() => {
       const cube = document.getElementById("authCube");
-      const showSignup = document.getElementById("showSignup");
-      const showLogin = document.getElementById("showLogin");
       const status = document.getElementById("flipStatus");
-      const loginForm = document.getElementById("loginForm");
-      const signupForm = document.getElementById("signupForm");
+      const faces = Array.from(document.querySelectorAll(".cube-face"));
 
-      // One shared state controls both directions.
-      let isSignUpVisible = false;
+      // One running value. Every trigger always adds exactly 90°.
+      let rotationDegrees = 0;
 
       function updateDepth() {
         const width = cube.getBoundingClientRect().width;
         cube.style.setProperty("--depth", (width / 2) + "px");
       }
 
-      function toggleFace() {
-        isSignUpVisible = !isSignUpVisible;
-        cube.classList.toggle("is-signup-visible", isSignUpVisible);
+      function updateActiveFace() {
+        const faceIndex = ((rotationDegrees / 90) % 4 + 4) % 4;
 
-        // The cube only ever rests at these two exact angles.
-        cube.style.transform = isSignUpVisible
-          ? "rotateY(-90deg)"
-          : "rotateY(0deg)";
+        faces.forEach((face, index) => {
+          face.classList.toggle("is-active", index === faceIndex);
+        });
 
-        status.textContent = isSignUpVisible
+        const isSignUp = faceIndex === 1 || faceIndex === 3;
+        status.textContent = isSignUp
           ? "Sign-up form is active."
           : "Login form is active.";
       }
 
+      function turnCube() {
+        rotationDegrees += 90;
+        cube.style.transform = "rotateY(" + rotationDegrees + "deg)";
+        updateActiveFace();
+      }
+
       updateDepth();
+      updateActiveFace();
+
       window.addEventListener("resize", updateDepth);
 
-      showSignup.addEventListener("click", toggleFace);
-      showLogin.addEventListener("click", toggleFace);
+      // Every trigger on every face performs the same +90° action.
+      document.querySelectorAll(".turn-trigger").forEach((trigger) => {
+        trigger.addEventListener("click", turnCube);
+      });
 
-      // Visual-only demo: no backend is connected.
-      loginForm.addEventListener("submit", (event) => event.preventDefault());
-      signupForm.addEventListener("submit", (event) => event.preventDefault());
+      // Existing visual-only demo forms have no backend.
+      document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", (event) => event.preventDefault());
+      });
     })();
   </script>
 </body>
